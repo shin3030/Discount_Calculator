@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>折扣計算機 </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+
+</head>
+
+<body
+    class="bg-[#0f1447] font-['Noto_Sans_TC'] text-slate-200 antialiased min-h-screen bg-[radial-gradient(circle_at_top_right,_#2d58fa33,_transparent),_radial-gradient(circle_at_bottom_left,_#a04be333,_transparent)]">
+
+    <div class="max-w-7xl mx-auto px-4 py-8 md:py-12">
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl md:text-4xl font-black text-[#f095f8] tracking-tight">消費組合計算</h1>
+            <div class="h-1.5 w-16 bg-gradient-to-r from-[#2d58fa] to-[#f095f8] mx-auto mt-4 rounded-full"></div>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="w-full lg:w-7/12 space-y-6">
+                <section class="card border-none shadow-2xl">
+                    <div class="flex justify-between items-center mb-5">
+                        <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                            <span class="w-1.5 h-5 bg-[#2d58fa] rounded-full"></span>1. 商品清單
+                        </h2>
+                        <span id="itemCount"
+                            class="text-[11px] font-bold bg-[#2d58fa]/10 text-[#2d58fa] px-2.5 py-1 rounded-full uppercase tracking-wider">0
+                            項目</span>
+                    </div>
+                    <div id="itemList" class="space-y-4"></div>
+                    <button onclick="App.addItem()"
+                        class="w-full mt-5 py-3 border-2 border-dashed border-slate-700 rounded-2xl text-[#2d58fa] text-sm font-bold hover:bg-[#2d58fa]/5 hover:border-[#2d58fa]/50 transition-all">+
+                        增加商品</button>
+                </section>
+
+                <section class="card border-none shadow-2xl">
+                    <h2 class="text-lg font-bold text-slate-100 mb-5 flex items-center gap-2">
+                        <span class="w-1.5 h-5 bg-[#a04be3] rounded-full"></span>2. 優惠券設定
+                    </h2>
+                    <div id="couponList" class="space-y-4"></div>
+                    <button onclick="App.addCoupon()"
+                        class="w-full mt-5 py-3 border-2 border-dashed border-slate-700 rounded-2xl text-[#a04be3] text-sm font-bold hover:bg-[#a04be3]/5 hover:border-[#a04be3]/50 transition-all">+
+                        增加優惠券</button>
+                </section>
+
+                <section class="card border-none shadow-2xl">
+                    <h2 class="text-lg font-bold text-slate-100 mb-5 flex items-center gap-2">
+                        <span class="w-1.5 h-5 bg-[#f095f8] rounded-full"></span>3. 運費環境
+                    </h2>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-1.5">
+                            <label
+                                class="text-[11px] text-slate-400 font-black uppercase tracking-widest ml-1">一般運費</label>
+                            <input type="number" id="shipFee" placeholder="請輸入金額"
+                                onfocus="if(this.value==='0')this.value=''" class="input-field">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label
+                                class="text-[11px] text-slate-400 font-black uppercase tracking-widest ml-1">免運門檻</label>
+                            <input type="number" id="freeLimit" placeholder="請輸入門檻"
+                                onfocus="if(this.value==='0')this.value=''" class="input-field">
+                        </div>
+                    </div>
+                </section>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-4 sticky bottom-4 z-10 lg:static">
+                    <button onclick="App.runAnalysis()"
+                        class="flex-[2] bg-gradient-to-r from-[#2d58fa] to-[#a04be3] hover:brightness-110 text-white font-bold py-4 rounded-2xl shadow-xl transition-all active:scale-95 text-lg">智慧計算最優組合</button>
+                    <button onclick="App.showModal()"
+                        class="flex-1 bg-[#1a1f4d] border border-slate-700 text-slate-400 font-bold py-4 rounded-2xl hover:text-rose-400 transition-all active:scale-95 shadow-sm">清空</button>
+                </div>
+            </div>
+
+            <div id="resultArea" class="w-full lg:w-5/12">
+                <div class="lg:sticky lg:top-10 space-y-5">
+                    <div
+                        class="card bg-gradient-to-br from-[#2d58fa] via-[#a04be3] to-[#f095f8] border-none shadow-2xl p-7 text-white">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-white/70 text-[11px] font-black uppercase tracking-[0.2em] mb-1">最優總支出
+                                </p>
+                                <h2 class="text-5xl font-black font-mono tracking-tighter text-white">$<span
+                                        id="totalBest">0</span></h2>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-white/70 text-[10px] font-black uppercase tracking-wider mb-1">預計省下</p>
+                                <p class="font-black text-2xl font-mono text-[#f095f8] drop-shadow-md">$<span
+                                        id="totalSaved">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="orderDetails"
+                        class="space-y-5 max-h-[60vh] lg:max-h-[70vh] overflow-y-auto no-scrollbar pb-10"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal"
+        class="fixed inset-0 bg-[#0f1447]/60 backdrop-blur-md z-[100] hidden flex items-center justify-center p-6">
+        <div
+            class="bg-[#1a1f4d] border border-slate-700 rounded-[2rem] p-10 max-w-sm w-full shadow-2xl animate-modal text-center">
+            <h3 class="text-2xl font-black text-white mb-3">確認清空？</h3>
+            <div class="space-y-3">
+                <button onclick="App.clearAll()"
+                    class="w-full py-4 bg-rose-500 text-white font-bold rounded-2xl hover:bg-rose-600 transition shadow-lg">是的，全部清空</button>
+                <button onclick="App.closeModal()"
+                    class="w-full py-4 text-slate-400 font-bold hover:bg-slate-800 rounded-2xl transition">我再想想</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="calcute.js"></script>
+</body>
+
+</html>
